@@ -34,6 +34,7 @@ int main(int argc, char* args[])
 		}
 		else
 		{
+			// COMMENTAIRE MANON
 			//Get window surface
 			screenSurface = SDL_GetWindowSurface(window);
 
