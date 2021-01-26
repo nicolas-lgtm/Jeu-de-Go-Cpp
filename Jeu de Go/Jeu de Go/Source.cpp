@@ -7,12 +7,11 @@ and may not be redistributed without written permission.*/
 #include <stdio.h>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1400;
+const int SCREEN_HEIGHT = 875;
 
 int main(int argc, char* args[])
 {
-	//KARIM
 	//The window we'll be rendering to
 	SDL_Window* window = NULL;
 
