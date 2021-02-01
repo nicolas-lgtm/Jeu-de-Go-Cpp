@@ -1,5 +1,6 @@
 ﻿  Case.cpp
   Goban.cpp
   Source.cpp
+D:\SDL_Jeu de Go\Jeu-de-Go\Jeu de Go\Jeu de Go\Source.cpp(29,19): warning C4101: 'e' : variable locale non référencée
   Génération de code en cours...
   Jeu de Go.vcxproj -> D:\SDL_Jeu de Go\Jeu-de-Go\Jeu de Go\x64\Debug\Jeu de Go.exe

@@ -1,69 +1,85 @@
-//Using SDL and standard IO
 #include "Header.h"
 #include "Case.h"
 #include "Goban.h"
-/*This source code copyrighted by Lazy Foo' Productions (2004-2020)
-and may not be redistributed without written permission.*/
 
-
-Goban* goban;
-int tailleGoban = 9;
+int tailleGoban = 19;
 
 SDL_Renderer* renderer;
-SDL_Window* window;
-SDL_Texture* texture;
 
-void DisplayCase(int x, int y) {
-    printf("Display case");
-
-    SDL_Surface* caseBMP = SDL_LoadBMP("Images\\case.bmp");
-
-    if (!caseBMP) printf("Erreur de chargement de l'image : %s", SDL_GetError());
-    texture = SDL_CreateTextureFromSurface(renderer, caseBMP);
-
-    SDL_Rect dstrect = { x, y, CASES_SIZE, CASES_SIZE };
-    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-    SDL_RenderPresent(renderer);
-}
-
-
-
-void FreeCase(SDL_Surface* caseBMP) {
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(caseBMP);
-}
-
+Goban* goban;
 
 int main(int argc, char** argv)
 {
+    SDL_Window* window;
+
     bool quit = false;
     SDL_Event event;
-
-    SDL_Init(SDL_INIT_VIDEO);
 
     window = SDL_CreateWindow("Jeu de Go",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    InitSDLElements(window);
 
-    goban = new Goban(19);
+    goban = new Goban(renderer, window, tailleGoban);
 
     while (!quit)
     {
         SDL_WaitEvent(&event);
 
-        switch (event.type)
+        SDL_Event e;
+
+        while (!quit)
         {
-        case SDL_QUIT:
-            quit = true;
-            break;
+            SDL_WaitEvent(&event);
+
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                quit = true;
+                break;
+            //case SDL_MOUSEBUTTONDOWN:
+            //    printf("click");
+            //    break;
+            }
+
+            for (int i = 0; i < tailleGoban; i++)
+                for (int j = 0; j < tailleGoban; j++)
+                    goban->cases[i][j]->handleEvent(&event);
         }
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-
+    Free(window);
     SDL_Quit();
 
     return 0;
+}
+
+
+
+//Fonctions 
+
+
+
+
+
+//void FreeCase(SDL_Surface* caseBMP) {
+//    SDL_DestroyTexture(caseTexture);
+//    SDL_FreeSurface(caseBMP);
+//}
+
+//void InitSprites() {
+//    caseTexture = SDL_CreateTextureFromSurface(renderer, caseBMP);
+//    if (!caseBMP) printf("Erreur de chargement de l'image : %s", SDL_GetError());
+//}
+
+void InitSDLElements(SDL_Window* window) {
+    SDL_Init(SDL_INIT_VIDEO);
+    renderer = SDL_CreateRenderer(window, -1, 0);
+    //InitSprites();
+}
+
+void Free(SDL_Window* window) {
+    //FreeCase(caseBMP);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 }
