@@ -1,14 +1,24 @@
 #pragma once
 #include "Header.h"
+
 class Goban;
+
+bool GroupeEstCapture(vector<Case*> a_groupe);
+vector<Case*> GroupeDePierres(Case* a_case);
+
+//Fonctions de debug
+void AfficherCoordonnees(Case* _case);
+void AfficherEtat(Etat a_etat);
+void AfficherVecteur(vector<Case*> a_vecteur);
+
 
 class Case
 {
 protected:
 	Etat etat;
+
 	pair<int, int> positionInPx;
 	pair<int, int> coordonnees;
-	bool peutJouer;
 
 	Goban* p_goban;
 
@@ -19,11 +29,14 @@ protected:
 
 	bool hasBeenChecked = false;
 
+	bool indisponibleUnTour = false;
 public:
 	Case();
 	Case(Goban* goban, SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* caseTexture, int a_index, int a_tailleGoban);
 
 	~Case();
+
+	void CreerCase();
 
 	void handleEvent(SDL_Event* e);
 
@@ -34,17 +47,26 @@ public:
 	std::pair<int, int> GetPositionInPx();
 
 	void SetEtat(Etat a_etat);
+	Etat GetEtatContraire(Etat a_etat);
 	Etat GetEtat();
 
-	void SetPeutPoser(bool a_peutPoser);
-	bool GetPeutPoser(bool a_noirJoue);
+	bool CaseEstVide();
 
-	pair<int, int> NbCasesVides_NbCasesEnnemies();
+	bool SeSuicide(vector<Case*> a_groupe);
+	vector<Case*> GetCasesAutour(Case* a_case);
+
+	bool HasLibertes();
+
 	void SetHasBeenChecked(bool a_hasBeenChecked);
 	bool GetHasBeenChecked();
-
+	
 	void SetTexture(SDL_Texture* caseTexture);
 	SDL_Texture* GetTexture();
+
+	void SetIndispo(bool a_indispo);
+	bool GetIndispo();
+
+	void Effacer();
 };
 
 

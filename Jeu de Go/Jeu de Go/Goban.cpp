@@ -61,6 +61,11 @@ void Goban::SetTaille(int a_taille) { taille = a_taille; }
 bool Goban::GetNoirDoitJouer() { return noirDoitJouer; }
 void Goban::SetTourJoueur() { noirDoitJouer = !noirDoitJouer; }
 
+Etat Goban::GetTypeJoueur() {
+	if (GetNoirDoitJouer())       return Etat::Noir;
+	else if(!GetNoirDoitJouer())  return Etat::Blanc;
+}
+
 int Goban::GetPtsNoir() { return ptsNoir; }
 void Goban::SetPtsNoir(int a_points_a_ajouter) { ptsNoir += a_points_a_ajouter; }
 
@@ -71,5 +76,24 @@ void Goban::ResetHasBeenCheckedParameter() {
 	for (int i = 0; i < GetTaille(); i++)
 		for (int j = 0; j < GetTaille(); j++)
 			if (cases[i][j]->GetHasBeenChecked()) cases[i][j]->SetHasBeenChecked(false);
+}
+
+void Goban::SetCaseIndispo(Case* a_case) { 
+	caseIndispo = a_case;
+}
+
+Case* Goban::GetCaseIndispo() {
+	return caseIndispo;
+}
+
+void Goban::SetTourIndispo(bool a_tourIndispo) {
+	tourIndispo = a_tourIndispo;
+}
+
+bool Goban::GetTourIndispo() {
+	return tourIndispo;
+}
+
+void Goban::ReinitCaseIndispo() { 
 
 }
