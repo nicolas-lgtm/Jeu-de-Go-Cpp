@@ -60,19 +60,33 @@ void Case::handleEvent(SDL_Event* e)
 		if (inside) {
 			system("cls");
 
-			if (!CaseEstVide()) return;
+			bool doitResetCaseIndispo = false;
+
+			if (!CaseEstVide() || this == p_goban->GetCaseIndispo()) {
+				cout << "Case occupee" << endl;
+				return;
+			}
+
+			if (p_goban->GetTourPasse()) p_goban->SetTourPasse(false);
+
+			if (p_goban->GetCaseIndispo()) doitResetCaseIndispo = true;
 
 			etat = p_goban->GetTypeJoueur();
 
 			p_goban->ResetHasBeenCheckedParameter();
-			this->SetHasBeenChecked(true);
 
 			vector<Case*> groupe = GroupeDePierres(this);
 			p_goban->ResetHasBeenCheckedParameter();
 
 			if (!SeSuicide(groupe)) CreerCase();
-			else etat = Etat::Vide;
+			else {
+				etat = Etat::Vide;
+				cout << "Suicide" << endl;
+			}
+
+			if (p_goban->GetCaseIndispo() && doitResetCaseIndispo) p_goban->ReinitCaseIndispo();
 		}
+
 	}
 }
 
@@ -130,7 +144,7 @@ bool Case::CaseEstVide() { return etat == Etat::Vide; }
 
 bool Case::SeSuicide(vector<Case*> a_groupe) { //Si est entourée exclusivement de cases ennemies SAUF s'il va tuer
 
-	vector <vector<Case*>> tousGroupesEnnemis; //Vecteur qui contient sur chaque case, un groupe de cases ennemies
+	vector <vector<Case*>> tousGroupesEnnemis; //Vecteur de vecteurs qui contient sur chaque vecteur, un groupe de pierres ennemies
 	vector <Case*> tempVector;
 
 	for (int i = 0; i < a_groupe.size(); i++) {
@@ -150,22 +164,29 @@ bool Case::SeSuicide(vector<Case*> a_groupe) { //Si est entourée exclusivement d
 		}
 	}
 
+	int nbCaptures = 0;
+
 	for (int i = 0; i < tousGroupesEnnemis.size(); i++)
 	{
 		for (int j = 0; j < tousGroupesEnnemis[i].size(); j++)
 		{
-			if (GroupeEstCapture(tousGroupesEnnemis[i])) { 	//Si un groupe ennemis n'a pas de libertés, alors ça veut dire qu'on le tue donc on peut poser sa pierre
-				for (int j = 0; j < tousGroupesEnnemis[i].size(); j++)
-					tousGroupesEnnemis[i][j]->Effacer();
+			vector<Case*> groupeEnnemi = tousGroupesEnnemis[i];
+
+			if (GroupeEstCapture(groupeEnnemi)) { 	//Si un groupe ennemis n'a pas de libertés, alors ça veut dire qu'on le tue donc on peut poser sa pierre
+				nbCaptures++;
+				for (int j = 0; j < groupeEnnemi.size(); j++) groupeEnnemi[j]->Effacer();
+
+				if (nbCaptures == 1 && groupeEnnemi.size() == 1) p_goban->SetCaseIndispo(groupeEnnemi[0]);
 			}
 		}
 	}
+
+	if (nbCaptures > 0)	CaptureEffects();
 
 	if (GroupeEstCapture(a_groupe)) return true;
 
 	return false;
 }
-
 
 vector<Case*> Case::GetCasesAutour(Case* a_case) {
 	vector<Case*> casesAutour;
@@ -183,7 +204,6 @@ vector<Case*> Case::GetCasesAutour(Case* a_case) {
 	return casesAutour;
 }
 
-
 bool Case::HasLibertes() {
 	vector<Case*> casesAutour = GetCasesAutour(this);
 
@@ -196,7 +216,6 @@ bool Case::HasLibertes() {
 //Si on a déjà fait des vérifications sur cette case
 void Case::SetHasBeenChecked(bool a_hasBeenCheckedForGroupe) { hasBeenChecked = a_hasBeenCheckedForGroupe; }
 bool Case::GetHasBeenChecked() { return hasBeenChecked; }
-
 
 //Image qui représente la case
 void Case::SetTexture(SDL_Texture* a_caseTexture) {
@@ -211,74 +230,21 @@ void Case::SetTexture(SDL_Texture* a_caseTexture) {
 	SDL_RenderPresent(p_renderer);
 }
 
-
 SDL_Texture* Case::GetTexture() { return caseTexture; }
-
 
 void Case::Effacer() {
 	SetEtat(Etat::Vide);
 
 	SDL_Texture* newTexture = SDL_CreateTextureFromSurface(p_renderer, caseVideSurface);
 	SetTexture(newTexture);
+
+	if (p_goban->GetTypeJoueur() == Etat::Noir)		 p_goban->AjoutPointNoir();
+	else if (p_goban->GetTypeJoueur() == Etat::Blanc) p_goban->AjoutPointBlanc();	
+
+	cout << "noir : " << p_goban->GetPtsNoir() << endl;
+	cout << "blanc : " << p_goban->GetPtsBlanc() << endl;
 }
 
 void Case::SetIndispo(bool a_indispo) { indisponibleUnTour = a_indispo; }
 
 bool Case::GetIndispo() { return indisponibleUnTour; }
-
-
-
-//Fonctions hors de la classe :
-
-bool GroupeEstCapture(vector<Case*> a_groupe) {
-	for (int i = 0; i < a_groupe.size(); i++)
-		if (a_groupe[i]->HasLibertes()) return false;
-
-	return true;
-}
-
-
-//Constitue le groupe liée à la pierre envoyée en param_tre
-vector<Case*> GroupeDePierres(Case* a_case) {
-	//cout << idRecursivite << endl;
-	vector<Case*> tempVector; //Stocke pierres alliées qui n'ont pas été checkées
-	vector<Case*> casesAutour = a_case->GetCasesAutour(a_case);//Récupère les cases autour de la pierre passée en paramètre
-
-	if (tempVector.empty()) tempVector.push_back(a_case); //Si le vecteur est vide, ça signifique que la pierre est isolée. Donc elle est seule dans son groupe. Il faut l'ajouter manuellement.
-
-	for (int i = 0; i < casesAutour.size(); i++) //On parcourt les cases autour de la case passée en paramètre
-	{
-		Case* newCase = casesAutour[i];
-
-		if (newCase->GetEtat() == a_case->GetEtat() && newCase->GetHasBeenChecked() == false) { //Si la case est alliée de cette passée en paramètre ET qu'elle n'a pas été checkée...
-			newCase->SetHasBeenChecked(true);													//...on indique qu'elle a été checkée...
-			vector <Case*> tempVector2 = GroupeDePierres(newCase);				//...on constitue depuis cette pierre...
-			tempVector.insert(end(tempVector), begin(tempVector2), end(tempVector2));			//...on ajoute le groupe de cette pierre au groupe de pierre déjà existant.
-		}
-	}
-
-
-	return tempVector; //Retourne le groupe constitué
-}
-
-//Fonctions de debug :
-
-void AfficherVecteur(vector<Case*> a_vecteur) {
-	for (int i = 0; i < a_vecteur.size(); i++) {
-		AfficherCoordonnees(a_vecteur[i]);
-	}
-
-	cout << endl;
-}
-void AfficherCoordonnees(Case* _case) { cout << "x : " << _case->GetIndex().first << " y : " << _case->GetIndex().second << " " << endl; }
-void AfficherEtat(Etat a_etat) {
-	if (a_etat == Etat::Vide) {
-		cout << "Vide ";
-	}
-	else if (a_etat == Etat::Noir) {
-		cout << "Noir ";
-	}
-	else if (a_etat == Etat::Blanc) {
-		cout << "Blanc ";
-	}
-}

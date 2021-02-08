@@ -22,26 +22,6 @@ Goban::Goban(SDL_Renderer* renderer, SDL_Window* window, int tailleGoban) {
 		cases.push_back(ligne);
 
 		for (int j = 0; j < tailleGoban; j++) {
-			//sprite = milieu;
-			//if (i == 0) {//Bord gauche
-			//	sprite = gauche;
-			//	
-			//	if (j == 0)	sprite = hautGauche;//Coin haut gauche
-			//	else if (j == tailleGoban - 1) sprite = basGauche; //Coin bas gauche
-			//}
-			//else if (i == tailleGoban - 1) {//Bord droit
-			//	sprite = droite;
-			//	if (j == 0)	sprite = hautDroite;//Coin haut gauche
-			//	else if (j == tailleGoban - 1) sprite = basDroite; //Coin bas gauche
-			//} else if (j == 0) {
-			//	sprite = haut;
-			//}
-			//else if (j == tailleGoban - 1) {
-			//	sprite = bas;
-			//}
-			//if (!sprite) printf("Erreur de chargement de l'image : %s", SDL_GetError());
-			//caseTexture = SDL_CreateTextureFromSurface(renderer, sprite);
-
 			Case* newCase = new Case(this, renderer, window, videTexture, index, tailleGoban);
 			cases[i].push_back(newCase);
 			index++;
@@ -51,12 +31,13 @@ Goban::Goban(SDL_Renderer* renderer, SDL_Window* window, int tailleGoban) {
 	SetTaille(tailleGoban);
 }
 
-Goban::~Goban() {
-	cout << "Destruction du Goban" << endl;
-}
+Goban::~Goban() { cout << "Destruction du Goban" << endl; }
 
 int Goban::GetTaille() { return taille; }
 void Goban::SetTaille(int a_taille) { taille = a_taille; }
+
+bool Goban::GetCapture() { return capture; }
+void Goban::SetCapture(bool a_capture) { capture = a_capture; }
 
 bool Goban::GetNoirDoitJouer() { return noirDoitJouer; }
 void Goban::SetTourJoueur() { noirDoitJouer = !noirDoitJouer; }
@@ -67,10 +48,10 @@ Etat Goban::GetTypeJoueur() {
 }
 
 int Goban::GetPtsNoir() { return ptsNoir; }
-void Goban::SetPtsNoir(int a_points_a_ajouter) { ptsNoir += a_points_a_ajouter; }
+void Goban::AjoutPointNoir() { ptsNoir++; }
 
-int Goban::GetPtsBlanc() { return taille; }
-void Goban::SetPtsBlanc(int a_points_a_ajouter) { ptsBlanc += a_points_a_ajouter; }
+float Goban::GetPtsBlanc() { return ptsBlanc; }
+void Goban::AjoutPointBlanc() { ptsBlanc++; }
 
 void Goban::ResetHasBeenCheckedParameter() {
 	for (int i = 0; i < GetTaille(); i++)
@@ -94,6 +75,20 @@ bool Goban::GetTourIndispo() {
 	return tourIndispo;
 }
 
-void Goban::ReinitCaseIndispo() { 
+void Goban::ReinitCaseIndispo() { SetCaseIndispo(NULL); }
 
+void Goban::Passer() {
+	SetTourJoueur();
+
+	if (GetTourPasse()) {
+		FinPartie();
+	}
+	else {
+		SetTourPasse(true);
+	}
 }
+
+void Goban::SetTourPasse(bool a_tourPasse) { tourPasse = a_tourPasse; }
+bool Goban::GetTourPasse() { return tourPasse; }
+void Goban::Abandonner() { FinPartie(); }
+void Goban::FinPartie() { cout << "Partie fini !" << endl; }

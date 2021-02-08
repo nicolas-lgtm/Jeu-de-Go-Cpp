@@ -8,13 +8,14 @@ class Goban
 protected:
 	int taille;
 	bool noirDoitJouer;
-	int ptsNoir;
-	int ptsBlanc;
-	SDL_Renderer* p;
+	int ptsNoir = 0;
+	float ptsBlanc = 6.5f;
 
 	Case* caseIndispo;
 	bool tourIndispo = false;
-	//vector<vector<Case*>> cases(taille, vector<Case> (taille));
+	bool tourPasse = false;
+	bool capture = false;
+
 public:
 	vector<vector<Case*>> cases;
 
@@ -24,18 +25,20 @@ public:
 	int GetTaille();
 	void SetTaille(int taille);
 
+	void SetCapture(bool a_capture);
+	bool GetCapture();
+
 	bool GetNoirDoitJouer();
 	void SetTourJoueur();
 	Etat GetTypeJoueur();
 
 	int GetPtsNoir();
-	void SetPtsNoir(int points_a_ajouter);	
+	void AjoutPointNoir();	
 	
-	int GetPtsBlanc();
-	void SetPtsBlanc(int points_a_ajouter);
+	float GetPtsBlanc();
+	void AjoutPointBlanc();
 
 	void ResetHasBeenCheckedParameter();
-	void ResetHasBeenCheckedByAlliesParameter();
 
 	Case* GetCaseIndispo();
 	void SetCaseIndispo(Case* a_case);
@@ -44,5 +47,12 @@ public:
 	bool GetTourIndispo();
 
 	void ReinitCaseIndispo();
+
+	void Passer();
+	void SetTourPasse(bool a_tourPasse);
+	bool GetTourPasse();
+	void Abandonner();
+
+	void FinPartie();
 };
 

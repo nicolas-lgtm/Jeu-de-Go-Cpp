@@ -1,3 +1,8 @@
-﻿  Case.cpp
-D:\SDL_Jeu de Go\Jeu-de-Go\Jeu de Go\Jeu de Go\Case.cpp(124): warning C4715: 'Case::GetEtatContraire' : les chemins de contrôle ne retournent pas tous une valeur
+﻿  Bouton.cpp
+  Case.cpp
+  Goban.cpp
+  Source.cpp
+  Génération de code en cours...
+D:\SDL_Jeu de Go\Jeu-de-Go\Jeu de Go\Jeu de Go\Goban.cpp(48): warning C4715: 'Goban::GetTypeJoueur' : les chemins de contrôle ne retournent pas tous une valeur
+D:\SDL_Jeu de Go\Jeu-de-Go\Jeu de Go\Jeu de Go\Case.cpp(138): warning C4715: 'Case::GetEtatContraire' : les chemins de contrôle ne retournent pas tous une valeur
   Jeu de Go.vcxproj -> D:\SDL_Jeu de Go\Jeu-de-Go\Jeu de Go\x64\Debug\Jeu de Go.exe
