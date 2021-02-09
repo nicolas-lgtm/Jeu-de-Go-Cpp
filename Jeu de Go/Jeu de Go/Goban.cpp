@@ -91,4 +91,4 @@ void Goban::Passer() {
 void Goban::SetTourPasse(bool a_tourPasse) { tourPasse = a_tourPasse; }
 bool Goban::GetTourPasse() { return tourPasse; }
 void Goban::Abandonner() { FinPartie(); }
-void Goban::FinPartie() { cout << "Partie fini !" << endl; }
+

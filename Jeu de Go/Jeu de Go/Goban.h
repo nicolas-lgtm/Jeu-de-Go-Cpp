@@ -7,7 +7,7 @@ class Goban
 {
 protected:
 	int taille;
-	bool noirDoitJouer;
+	bool noirDoitJouer = true;
 	int ptsNoir = 0;
 	float ptsBlanc = 6.5f;
 
@@ -52,7 +52,5 @@ public:
 	void SetTourPasse(bool a_tourPasse);
 	bool GetTourPasse();
 	void Abandonner();
-
-	void FinPartie();
 };
 

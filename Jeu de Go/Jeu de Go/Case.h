@@ -4,7 +4,7 @@
 class Goban;
 
 bool GroupeEstCapture(vector<Case*> a_groupe);
-vector<Case*> GroupeDePierres(Case* a_case);
+vector<Case*> GroupeDeCases(Case* a_case);
 
 //Fonctions de debug
 void AfficherCoordonnees(Case* _case);
@@ -53,9 +53,10 @@ public:
 	bool CaseEstVide();
 
 	bool SeSuicide(vector<Case*> a_groupe);
-	vector<Case*> GetCasesAutour(Case* a_case);
 
 	bool HasLibertes();
+
+	vector<Case*> GetEntourage(Case* a_case);
 
 	void SetHasBeenChecked(bool a_hasBeenChecked);
 	bool GetHasBeenChecked();

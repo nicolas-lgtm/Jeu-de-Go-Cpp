@@ -75,7 +75,7 @@ void Case::handleEvent(SDL_Event* e)
 
 			p_goban->ResetHasBeenCheckedParameter();
 
-			vector<Case*> groupe = GroupeDePierres(this);
+			vector<Case*> groupe = GroupeDeCases(this);
 			p_goban->ResetHasBeenCheckedParameter();
 
 			if (!SeSuicide(groupe)) CreerCase();
@@ -149,12 +149,12 @@ bool Case::SeSuicide(vector<Case*> a_groupe) { //Si est entourée exclusivement d
 
 	for (int i = 0; i < a_groupe.size(); i++) {
 
-		vector <Case*> entourage = GetCasesAutour(a_groupe[i]);
+		vector <Case*> entourage = GetEntourage(a_groupe[i]);
 
 		for (int j = 0; j < entourage.size(); j++)
 		{
 			if (entourage[j]->GetEtat() == GetEtatContraire(p_goban->GetTypeJoueur()) && (!entourage[j]->GetHasBeenChecked())) {
-				tempVector = GroupeDePierres(entourage[j]);
+				tempVector = GroupeDeCases(entourage[j]);
 
 				if (!tempVector.empty()) {
 					tousGroupesEnnemis.push_back(tempVector);
@@ -188,7 +188,7 @@ bool Case::SeSuicide(vector<Case*> a_groupe) { //Si est entourée exclusivement d
 	return false;
 }
 
-vector<Case*> Case::GetCasesAutour(Case* a_case) {
+vector<Case*> Case::GetEntourage(Case* a_case) {
 	vector<Case*> casesAutour;
 
 	int x = a_case->GetIndex().first;
@@ -205,7 +205,7 @@ vector<Case*> Case::GetCasesAutour(Case* a_case) {
 }
 
 bool Case::HasLibertes() {
-	vector<Case*> casesAutour = GetCasesAutour(this);
+	vector<Case*> casesAutour = GetEntourage(this);
 
 	for (int i = 0; i < casesAutour.size(); i++)
 		if (casesAutour[i]->etat == Etat::Vide) return true;
@@ -241,8 +241,8 @@ void Case::Effacer() {
 	if (p_goban->GetTypeJoueur() == Etat::Noir)		 p_goban->AjoutPointNoir();
 	else if (p_goban->GetTypeJoueur() == Etat::Blanc) p_goban->AjoutPointBlanc();	
 
-	cout << "noir : " << p_goban->GetPtsNoir() << endl;
-	cout << "blanc : " << p_goban->GetPtsBlanc() << endl;
+	//cout << "noir : " << p_goban->GetPtsNoir() << endl;
+	//cout << "blanc : " << p_goban->GetPtsBlanc() << endl;
 }
 
 void Case::SetIndispo(bool a_indispo) { indisponibleUnTour = a_indispo; }

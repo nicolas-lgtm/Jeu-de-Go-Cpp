@@ -17,6 +17,11 @@ void DisplayScoreNoir();
 
 void CaptureEffects();
 
+void FinPartie();
+void AfficherWinner(SDL_Surface* textParent, SDL_Surface* background, SDL_Rect a_position);
+
 void KillAll();
 
 float Round(float a_value);
+
+void ComptagePoints();
