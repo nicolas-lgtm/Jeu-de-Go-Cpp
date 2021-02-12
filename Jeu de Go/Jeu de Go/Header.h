@@ -23,10 +23,11 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 1400;
+const float ratio = 1.619f;
+const int SCREEN_HEIGHT = SCREEN_WIDTH / ratio;
 
-const int CASES_SIZE = 25;
+const int CASES_SIZE = 35;
 
 
 enum class Etat

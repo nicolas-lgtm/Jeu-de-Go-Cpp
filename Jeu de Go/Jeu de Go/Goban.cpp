@@ -31,7 +31,12 @@ Goban::Goban(SDL_Renderer* renderer, SDL_Window* window, int tailleGoban) {
 	SetTaille(tailleGoban);
 }
 
-Goban::~Goban() { cout << "Destruction du Goban" << endl; }
+Goban::~Goban() { 
+	for (int i = 0; i < cases.size(); i++) cases[i].clear();
+
+	cout << "Destruction du Goban" << endl; 
+
+}
 
 int Goban::GetTaille() { return taille; }
 void Goban::SetTaille(int a_taille) { taille = a_taille; }
@@ -78,6 +83,18 @@ bool Goban::GetTourIndispo() {
 void Goban::ReinitCaseIndispo() { SetCaseIndispo(NULL); }
 
 void Goban::Passer() {
+
+	if (GetTypeJoueur() == Etat::Noir) {
+		AjoutPointBlanc();
+		DisplayScoreBlanc(250, 250);
+	}
+	else {
+		AjoutPointNoir();
+		DisplayScoreNoir(250, 250);
+	}
+
+	
+
 	SetTourJoueur();
 
 	if (GetTourPasse()) {

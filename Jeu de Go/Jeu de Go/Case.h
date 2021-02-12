@@ -56,7 +56,7 @@ public:
 
 	bool HasLibertes();
 
-	vector<Case*> GetEntourage(Case* a_case);
+	vector<Case*> GetEntourage();
 
 	void SetHasBeenChecked(bool a_hasBeenChecked);
 	bool GetHasBeenChecked();

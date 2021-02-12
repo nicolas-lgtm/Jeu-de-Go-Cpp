@@ -14,6 +14,8 @@ SDL_Surface* caseBlancheSurface = SDL_LoadBMP("Images\\blanc.bmp");
 //Constructeurs
 Case::Case() { cout << "Case creee" << endl; }
 
+int marginTop = 30;
+
 Case::Case(Goban* goban, SDL_Renderer* renderer, SDL_Window* a_window, SDL_Texture* caseTexture, int a_index, int a_tailleGoban) {
 	SetEtat(Etat::Vide);
 	SetIndex(a_index, a_tailleGoban);
@@ -21,7 +23,7 @@ Case::Case(Goban* goban, SDL_Renderer* renderer, SDL_Window* a_window, SDL_Textu
 	p_goban = goban;
 
 	int centerX = (SCREEN_WIDTH / 2) - (CASES_SIZE / 2 * a_tailleGoban);
-	int centerY = (SCREEN_HEIGHT / 2) - (CASES_SIZE / 2 * a_tailleGoban);
+	int centerY = (SCREEN_HEIGHT / 2) - (CASES_SIZE / 2 * a_tailleGoban) + marginTop;
 
 	int x = centerX + GetIndex().first * CASES_SIZE;
 	int y = centerY + GetIndex().second * CASES_SIZE;
@@ -149,7 +151,7 @@ bool Case::SeSuicide(vector<Case*> a_groupe) { //Si est entourée exclusivement d
 
 	for (int i = 0; i < a_groupe.size(); i++) {
 
-		vector <Case*> entourage = GetEntourage(a_groupe[i]);
+		vector <Case*> entourage = a_groupe[i]->GetEntourage();
 
 		for (int j = 0; j < entourage.size(); j++)
 		{
@@ -188,11 +190,11 @@ bool Case::SeSuicide(vector<Case*> a_groupe) { //Si est entourée exclusivement d
 	return false;
 }
 
-vector<Case*> Case::GetEntourage(Case* a_case) {
+vector<Case*> Case::GetEntourage() {
 	vector<Case*> casesAutour;
 
-	int x = a_case->GetIndex().first;
-	int y = a_case->GetIndex().second;
+	int x = GetIndex().first;
+	int y = GetIndex().second;
 
 	int tailleGoban = p_goban->GetTaille();
 
@@ -205,7 +207,7 @@ vector<Case*> Case::GetEntourage(Case* a_case) {
 }
 
 bool Case::HasLibertes() {
-	vector<Case*> casesAutour = GetEntourage(this);
+	vector<Case*> casesAutour = GetEntourage();
 
 	for (int i = 0; i < casesAutour.size(); i++)
 		if (casesAutour[i]->etat == Etat::Vide) return true;
